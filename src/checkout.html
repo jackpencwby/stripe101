@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+</head>
+
+<body>
+    <form id="handleSubmit">
+        <h1>ข้อมูลออเดอร์</h1>
+        <p>
+            <label for="">ชื่อผู้รับ : </label>
+            <input type="text" name="fullname" id="fullname" value="user2">
+        </p>
+        <p>
+            <label for="">ที่อยู่ : </label>
+            <textarea name="address" id="address" rows="3" cols="30">ไม่บอกอิอิ</textarea>
+        </p>
+        <p>
+            <label for="">ชื่อสินค้า : </label>
+            <input type="text" name="name" id="name" value="Notebook">
+        </p>
+        <p>
+            <label for="">ราคาสินค้า : </label>
+            <input type="text" name="price" id="price" value=30000>
+        </p>
+        <p>
+            <label for="">จำนวน : </label>
+            <input type="number" name="quantity" id="quantity" value=2>
+        </p>
+        <button type="submit">สั่งซื้อ</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        const stripe = Stripe("pk_test_51POJvDRqjQTMjrMpX4RJpOCVJb9Vn1k2ig0juCTsLzISyMdv1ko4Xo8nFPejRGx9yaJ2UsKmT3E6FzcIxCTEe68N00N1BPvBy9");
+
+        handleSubmit.addEventListener("submit", async (e) => {
+            try {
+                e.preventDefault();
+
+                const data = new FormData(e.currentTarget);
+
+                const payload = {
+                    user: {
+                        fullname: data.get("fullname"),
+                        address: data.get("address")
+                    },
+                    product: {
+                        name: data.get("name"),
+                        price: Number(data.get("price")),
+                        quantity: Number(data.get("quantity"))
+                    }
+                };
+
+                const response = await axios.post("http://localhost:8000/api/checkout", payload);
+
+                stripe.redirectToCheckout({
+                    sessionId: response.data.session_id
+                });
+            }
+            catch (err) {
+                console.log(err);
+            }
+        })
+    </script>
+</body>
+
+</html>

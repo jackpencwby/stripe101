@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success</title>
+</head>
+
+<body>
+    <h1>ชำระเงินสำเร็จ</h1>
+
+    <div>
+        <div>ชื่อ : <span id="fullname"></span></div>
+        <div>ที่อยู่ : <span id="address"></span></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+
+    <script>
+        window.onload = async () => {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const order_id = urlParams.get("order_id");
+                const response = await axios.get(`http://localhost:8000/api/order/${order_id}`);
+                document.getElementById("fullname").innerText = response.data.fullname;
+                document.getElementById("address").innerText = response.data.address;
+            }
+            catch (err) {
+                console.log(err);
+            }
+        };
+    </script>
+</body>
+
+</html>
